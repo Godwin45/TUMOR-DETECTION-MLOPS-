@@ -3,7 +3,8 @@ import os
 from cnnClassifier.utils.common import read_yaml, create_directories
 from cnnClassifier.entity.config_entity import (DataIngestionConfig,
                                                 PrepareBaseModelConfig,
-                                                PrepareCallbacksConfig)
+                                                PrepareCallbacksConfig,
+                                                FeatureConfig)
 
 
 class ConfigurationManager:
@@ -68,4 +69,17 @@ class ConfigurationManager:
         )
 
         return prepare_callback_config
+    
+    def get_feature_engineering_config(self) -> FeatureConfig:
+        config = self.config.feature_engineering
+        
+        create_directories([config.root_dir])
+
+        feature_eng_config = FeatureConfig(
+            root_dir=Path(config.root_dir),
+            brain_df=Path(config.brain_df),
+          
+        )
+
+        return  feature_eng_config
       

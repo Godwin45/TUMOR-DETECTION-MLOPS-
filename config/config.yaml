@@ -18,3 +18,12 @@ prepare_callbacks:
   tensorboard_root_log_dir: artifacts/prepare_callbacks/tensorboard_log_dir
   checkpoint_model_filepath: artifacts/prepare_callbacks/checkpoint_dir/model.h5
 
+feature_engineering:
+  root_dir: artifacts/data_ingestion/Brain_MRI
+  brain_df: artifacts/data_ingestion/Brain_MRI/data_mask.csv
+
+training:
+  root_dir: artifacts/training
+  brain_df: artifacts/training/model.h5
+
+
