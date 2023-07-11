@@ -1,10 +1,12 @@
 from cnnClassifier.constants import *
 import os
+import pandas as pd
 from cnnClassifier.utils.common import read_yaml, create_directories
 from cnnClassifier.entity.config_entity import (DataIngestionConfig,
                                                 PrepareBaseModelConfig,
                                                 PrepareCallbacksConfig,
-                                                FeatureConfig)
+                                                FeatureConfig,
+                                                TrainingConfig)
 
 
 class ConfigurationManager:
@@ -53,6 +55,19 @@ class ConfigurationManager:
         )
 
         return prepare_base_model_config
+    
+    def get_feature_engineering_config(self) -> FeatureConfig:
+        config = self.config.feature_engineering
+        
+        create_directories([config.root_dir])
+
+        feature_eng_config = FeatureConfig(
+            root_dir=Path(config.root_dir),
+            brain_df=Path(config.brain_df),
+          
+        )
+
+        return  feature_eng_config
 
     def get_prepare_callback_config(self) -> PrepareCallbacksConfig:
         config = self.config.prepare_callbacks
@@ -70,16 +85,26 @@ class ConfigurationManager:
 
         return prepare_callback_config
     
-    def get_feature_engineering_config(self) -> FeatureConfig:
-        config = self.config.feature_engineering
-        
-        create_directories([config.root_dir])
+    
+    def get_training_config(self) -> TrainingConfig:
+        training = self.config.training
+        prepare_base_model = self.config.prepare_base_model
+        params = self.params
+        # training_data = pd.read_csv(os.path.join(self.config.data_ingestion.unzip_dir, "data_mask.csv"))
+        training_data = pd.read_csv('artifacts/data_ingestion/Brain_MRI/train.csv')
+        create_directories([
+                Path(training.root_dir)
+            ])
 
-        feature_eng_config = FeatureConfig(
-            root_dir=Path(config.root_dir),
-            brain_df=Path(config.brain_df),
-          
+
+        training_config = TrainingConfig(
+            root_dir=Path(training.root_dir),
+            trained_model_path=Path(training.trained_model_path),
+            updated_base_model_path=Path(prepare_base_model.updated_base_model_path),
+            training_data=training_data,
+            params_epochs=params.EPOCHS,
+            params_batch_size=params.BATCH_SIZE,
+            params_is_augmentation=params.AUGMENTATION,
         )
 
-        return  feature_eng_config
-      
+        return training_config

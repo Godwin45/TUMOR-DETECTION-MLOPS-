@@ -10,20 +10,25 @@ data_ingestion:
 
 prepare_base_model:
   root_dir: artifacts/prepare_base_model
-  base_model_path: artifacts/prepare_base_model/base_model.h5
-  updated_base_model_path: artifacts/prepare_base_model/base_model_updated.h5
+  base_model_path: artifacts/prepare_base_model/base_model.hdf5
+  updated_base_model_path: artifacts/prepare_base_model/base_model_updated.hdf5
 
 prepare_callbacks:
   root_dir: artifacts/prepare_callbacks
   tensorboard_root_log_dir: artifacts/prepare_callbacks/tensorboard_log_dir
-  checkpoint_model_filepath: artifacts/prepare_callbacks/checkpoint_dir/model.h5
+  checkpoint_model_filepath: artifacts/prepare_callbacks/checkpoint_dir/model.hdf5
 
 feature_engineering:
   root_dir: artifacts/data_ingestion/Brain_MRI
   brain_df: artifacts/data_ingestion/Brain_MRI/data_mask.csv
 
+
 training:
   root_dir: artifacts/training
-  brain_df: artifacts/training/model.h5
+  trained_model_path: artifacts/training/model.hdf5
+
+testing:
+  root_dir: artifacts/testing
+  
 
 
