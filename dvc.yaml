@@ -1,0 +1,67 @@
+stages:
+  data_ingestion:
+    cmd: python src/cnnClassifier/pipeline/stage_01_data_ingestion.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_01_data_ingestion.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion/Brain_MRI/data_mask.csv
+
+  # Add a new stage to load data_mask.csv as a DataFrame
+  load_dataframe:
+    cmd: python -c "import pandas as pd; df = pd.read_csv('artifacts/data_ingestion/Brain_MRI/data_mask.csv'); df.to_pickle('artifacts/data_ingestion/Brain_MRI/data_mask.pkl')"
+    deps:
+      - artifacts/data_ingestion/Brain_MRI/data_mask.csv
+    outs:
+      - artifacts/data_ingestion/Brain_MRI/data_mask.pkl
+
+  prepare_base_model:
+    cmd: python src/cnnClassifier/pipeline/stage_02_prepare_base_model.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_02_prepare_base_model.py
+      - config/config.yaml
+    params:
+      - INCLUDE_TOP
+      - CLASSES
+      - WEIGHTS
+      - LEARNING_RATE
+    outs:
+      - artifacts/prepare_base_model
+
+  feature_engineering:
+    cmd: python src/cnnClassifier/pipeline/stage_03_feature_engineering.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_03_feature_engineering.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Brain_MRI/data_mask.csv
+    outs:
+      - artifacts/data_ingestion/Brain_MRI/train.csv
+      - artifacts/data_ingestion/Brain_MRI/test.csv
+
+  training:
+    cmd: python src/cnnClassifier/pipeline/stage_04_training.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_04_training.py
+      - src/cnnClassifier/components/prepare_callbacks.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Brain_MRI/train.csv
+      - artifacts/prepare_base_model
+    params:
+      - EPOCHS
+      - BATCH_SIZE
+      - AUGMENTATION
+    outs:
+      - artifacts/training/model.hdf5
+
+  evaluation:
+    cmd: python src/cnnClassifier/pipeline/stage_05_evaluation.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_05_evaluation.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Brain_MRI/train.csv
+      - artifacts/training/model.hdf5
+    params:
+      - BATCH_SIZE
+    metrics:
+      - scores.json:
+          cache: false

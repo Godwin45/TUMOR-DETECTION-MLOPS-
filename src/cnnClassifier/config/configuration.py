@@ -6,7 +6,8 @@ from cnnClassifier.entity.config_entity import (DataIngestionConfig,
                                                 PrepareBaseModelConfig,
                                                 PrepareCallbacksConfig,
                                                 FeatureConfig,
-                                                TrainingConfig)
+                                                TrainingConfig,
+                                                EvaluationConfig)
 
 
 class ConfigurationManager:
@@ -108,3 +109,13 @@ class ConfigurationManager:
         )
 
         return training_config
+
+    def get_validation_config(self) -> EvaluationConfig:
+        eval_config = EvaluationConfig(
+            path_of_model="artifacts/training/model.hdf5",
+            training_data = pd.read_csv('artifacts/data_ingestion/Brain_MRI/data_mask.csv'),
+            all_params=self.params,
+            params_batch_size=self.params.BATCH_SIZE
+        )
+        return eval_config 
+    

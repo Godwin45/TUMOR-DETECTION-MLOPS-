@@ -1,0 +1,139 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python src/cnnClassifier/pipeline/stage_01_data_ingestion.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 3ec12ff5e5df3a7a8d91947e38ebf333
+      size: 923
+    - path: src/cnnClassifier/pipeline/stage_01_data_ingestion.py
+      hash: md5
+      md5: 46dd229dbdb7670dac25421e534fe5d1
+      size: 914
+    outs:
+    - path: artifacts/data_ingestion/Brain_MRI/data_mask.csv
+      hash: md5
+      md5: 5db687f5db8cbeb8e7231406b5a1b2c5
+      size: 512756
+  load_dataframe:
+    cmd: python -c "import pandas as pd; df = pd.read_csv('artifacts/data_ingestion/Brain_MRI/data_mask.csv');
+      df.to_pickle('artifacts/data_ingestion/Brain_MRI/data_mask.pkl')"
+    deps:
+    - path: artifacts/data_ingestion/Brain_MRI/data_mask.csv
+      hash: md5
+      md5: 5db687f5db8cbeb8e7231406b5a1b2c5
+      size: 512756
+    outs:
+    - path: artifacts/data_ingestion/Brain_MRI/data_mask.pkl
+      hash: md5
+      md5: ece268522f8bae54aa74e9fb12b69f7e
+      size: 476814
+  prepare_base_model:
+    cmd: python src/cnnClassifier/pipeline/stage_02_prepare_base_model.py
+    deps:
+    - path: config/config.yaml
+      hash: md5
+      md5: 3ec12ff5e5df3a7a8d91947e38ebf333
+      size: 923
+    - path: src/cnnClassifier/pipeline/stage_02_prepare_base_model.py
+      hash: md5
+      md5: bdc031b38a1dbe1f55b87890ca0620e2
+      size: 1003
+    params:
+      params.yaml:
+        CLASSES: 2
+        INCLUDE_TOP: false
+        LEARNING_RATE: 0.01
+        WEIGHTS: imagenet
+    outs:
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: f750ab4abc34d264c3e5e7a8ad9fd327.dir
+      size: 198438960
+      nfiles: 2
+  feature_engineering:
+    cmd: python src/cnnClassifier/pipeline/stage_03_feature_engineering.py
+    deps:
+    - path: artifacts/data_ingestion/Brain_MRI/data_mask.csv
+      hash: md5
+      md5: 5db687f5db8cbeb8e7231406b5a1b2c5
+      size: 512756
+    - path: config/config.yaml
+      hash: md5
+      md5: 3ec12ff5e5df3a7a8d91947e38ebf333
+      size: 923
+    - path: src/cnnClassifier/pipeline/stage_03_feature_engineering.py
+      hash: md5
+      md5: 87d43e9578a3f7fec2937bd15dc228f9
+      size: 912
+    outs:
+    - path: artifacts/data_ingestion/Brain_MRI/test.csv
+      hash: md5
+      md5: 26ec51ef7e39331077e3888df59a8913
+      size: 64667
+    - path: artifacts/data_ingestion/Brain_MRI/train.csv
+      hash: md5
+      md5: 17d31a51295ae59623afdcb73b0c5e50
+      size: 365597
+  training:
+    cmd: python src/cnnClassifier/pipeline/stage_04_training.py
+    deps:
+    - path: artifacts/data_ingestion/Brain_MRI/train.csv
+      hash: md5
+      md5: 17d31a51295ae59623afdcb73b0c5e50
+      size: 365597
+    - path: artifacts/prepare_base_model
+      hash: md5
+      md5: f750ab4abc34d264c3e5e7a8ad9fd327.dir
+      size: 198438960
+      nfiles: 2
+    - path: config/config.yaml
+      hash: md5
+      md5: 3ec12ff5e5df3a7a8d91947e38ebf333
+      size: 923
+    - path: src/cnnClassifier/components/prepare_callbacks.py
+      hash: md5
+      md5: c99b3555d6fd1f8d27e5b4f3cdae16c0
+      size: 1320
+    - path: src/cnnClassifier/pipeline/stage_04_training.py
+      hash: md5
+      md5: cdf3bf652f354b6e1785bc57ff694e36
+      size: 1268
+    params:
+      params.yaml:
+        AUGMENTATION: true
+        BATCH_SIZE: 16
+        EPOCHS: 2
+    outs:
+    - path: artifacts/training/model.hdf5
+      hash: md5
+      md5: d21a53a694ab9ecf29cc89ff2f29a6b1
+      size: 120877592
+  evaluation:
+    cmd: python src/cnnClassifier/pipeline/stage_05_evaluation.py
+    deps:
+    - path: artifacts/data_ingestion/Brain_MRI/train.csv
+      hash: md5
+      md5: 17d31a51295ae59623afdcb73b0c5e50
+      size: 365597
+    - path: artifacts/training/model.hdf5
+      hash: md5
+      md5: d21a53a694ab9ecf29cc89ff2f29a6b1
+      size: 120877592
+    - path: config/config.yaml
+      hash: md5
+      md5: 3ec12ff5e5df3a7a8d91947e38ebf333
+      size: 923
+    - path: src/cnnClassifier/pipeline/stage_05_evaluation.py
+      hash: md5
+      md5: 18d8a46a52eb6a0e625b1890cfa263c5
+      size: 883
+    params:
+      params.yaml:
+        BATCH_SIZE: 16
+    outs:
+    - path: scores.json
+      hash: md5
+      md5: 6940ff1b367e6b2d6c4a7aad3af50a04
+      size: 74

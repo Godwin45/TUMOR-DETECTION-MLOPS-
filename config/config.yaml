@@ -27,8 +27,7 @@ training:
   root_dir: artifacts/training
   trained_model_path: artifacts/training/model.hdf5
 
-testing:
-  root_dir: artifacts/testing
+
   
 
 
