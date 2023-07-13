@@ -15,4 +15,6 @@ scipy
 Flask
 scikit-learn
 Flask-Cors
+opencv-python
+scikit-image
 -e .
