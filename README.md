@@ -12,10 +12,10 @@ This tumor detection app is a web-based application designed to assist in the ea
 - **User-Friendly Interface**: The app features a clean and intuitive user interface, making it accessible to medical professionals and researchers with varying levels of technical expertise.
 
 ## Deployment
-The app has been deployed on AWS (Amazon Web Services) to ensure reliable and scalable performance. It can be accessed using the following URL: [http://35.175.244.177:8080](http://35.175.244.177:8080). The app is hosted on a cloud server, providing accessibility from any internet-connected device.
+The app has been deployed on AWS (Amazon Web Services) to ensure reliable and scalable performance. It can be accessed using the following URL: [http://http://3.84.24.221:8080](hhttp://3.84.24.221:8080). The app is hosted on a cloud server, providing accessibility from any internet-connected device.
 
 ## Usage Instructions
-1. Access the app using the provided URL: [http://35.175.244.177:8080](http://35.175.244.177:8080).
+1. Access the app using the provided URL: [http://3.84.24.221:8080](http://3.84.24.221:8080).
 2. On the app's homepage, click on the "Upload Image" button.
 3. Select the medical image file from your local device that you wish to analyze.
 4. Wait for the app to process the image and detect any tumors.
