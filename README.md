@@ -1,5 +1,4 @@
-# Tumor Detection App
-##END TO END (MLOPS)
+# Tumor Detection App(END TO END)
 
 ## Description
 This tumor detection app is a web-based application designed to assist in the early detection of tumors. It utilizes advanced image processing and machine learning algorithms to analyze medical images and identify potential tumors. The app provides a user-friendly interface for uploading medical images, processing them, and displaying the results.
@@ -34,4 +33,4 @@ This app is intended for educational and informational purposes only. It is not 
 
 ## License
 This app is released under the [MIT License](LICENSE).
-EOF
+
